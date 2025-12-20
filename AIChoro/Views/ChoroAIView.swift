@@ -1,24 +1,20 @@
 //
-//  ContentView.swift
+//  ChoroAIView.swift
 //  AIChoro
 //
-//  Created by 川村周也 on 2025/12/18.
+//  Created by 川村周也 on 2025/12/19.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct ChoroAIView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Choro View")
         }
         .padding()
     }
-}
-
-#Preview {
-    ContentView()
 }
