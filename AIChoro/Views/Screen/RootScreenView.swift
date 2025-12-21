@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  RootScreenView.swift
 //  AIChoro
 //
 //  Created by 川村周也 on 2025/12/18.
@@ -7,24 +7,23 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct RootScreenView: View {
     var body: some View {
         TabView {
-            ADRListView()
+            ADRListScreenView()
                 .tabItem {
                     Label("ADR一覧", systemImage: "folder")
                 }
-                .tag(1)
-            ChoroAIView()
+            ChoroAIScreenView()
                 .tabItem {
                     Label("長老AI", systemImage: "apple.intelligence")
                 }
         }
         .tint(Color("Primary"))
-        
     }
 }
 
 #Preview {
-    MainView()
+    RootScreenView()
 }
+
