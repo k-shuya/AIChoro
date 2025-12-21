@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct RootScreenView: View {
+    
     var body: some View {
         TabView {
-            ADRListScreenView()
+            Route.adrList.makeDestinationView()
                 .tabItem {
                     Label("ADR一覧", systemImage: "folder")
                 }
-            ChoroAIScreenView()
+            Route.choroAI.makeDestinationView()
                 .tabItem {
                     Label("長老AI", systemImage: "apple.intelligence")
                 }

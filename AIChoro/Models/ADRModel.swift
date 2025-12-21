@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum ADRStatus: String, Hashable {
+enum ADRStatus: String{
     case proposal = "提案"
     case approved = "承認"
     case rejected = "却下"
     case withdrew = "取下"
 }
 
-struct ADR: Identifiable, Hashable {
+struct ADRModel: Identifiable, Hashable {
     let id = UUID()
     let status: ADRStatus
     let decision: String

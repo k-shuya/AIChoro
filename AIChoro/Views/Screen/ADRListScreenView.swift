@@ -10,20 +10,20 @@ import SwiftUI
 struct ADRListScreenView: View {
     @State private var router = ADRListRouter()
     
-    let adrList: [ADR] = [
-        ADR(
+    let adrList: [ADRModel] = [
+        ADRModel(
             status: .approved,
             decision: "今日の晩御飯はカレーにする",
             context: "Instagramで流れてきたから",
             others: "食材の買い出しが必要"
         ),
-        ADR(
+        ADRModel(
             status: .withdrew,
             decision: "今日の晩御飯は寿司にする",
             context: "カレーの口になってしまったから",
             others: "来週寿司を食べる"
         ),
-        ADR(
+        ADRModel(
             status: .rejected,
             decision: "デスクトップPCを買う",
             context: "お金がなくて無理だと結論が出たため",
@@ -38,6 +38,8 @@ struct ADRListScreenView: View {
                 //                error
                 //                loading
             }
+            .navigationTitle(Route.adrList.title)
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(
                 for: Route.self,
                 destination: { route in

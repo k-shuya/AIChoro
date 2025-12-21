@@ -9,7 +9,7 @@ import SwiftUI
 
 enum Route: Hashable {
     case adrList
-    case adrDetail(adr: ADR)
+    case adrDetail(adr: ADRModel)
     case choroAI
     
     var title: String {
@@ -24,11 +24,11 @@ enum Route: Hashable {
     func makeDestinationView() -> some View {
         switch self {
         case .adrList:
-            ADRListScreenView()
+            ADRListScreenView().navigationTitle(self.title)
         case .adrDetail(let adr):
-            ADRDetailScreenView(adr: adr)
+            ADRDetailScreenView(adr: adr).navigationTitle(self.title)
         case .choroAI:
-            ChoroAIScreenView()
+            ChoroAIScreenView().navigationTitle(self.title)
         }
     }
 }
