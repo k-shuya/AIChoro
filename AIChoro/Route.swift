@@ -9,7 +9,7 @@ import SwiftUI
 
 enum Route: Hashable {
     case adrList
-    case adrDetail(adr: ADRModel)
+    case adrDetail(adr: ADR)
     case choroAI
     
     var title: String {

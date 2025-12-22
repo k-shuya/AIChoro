@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AIChoroApp: App {
@@ -13,5 +14,6 @@ struct AIChoroApp: App {
         WindowGroup {
             RootScreenView()
         }
+        .modelContainer(for: ADR.self)
     }
 }

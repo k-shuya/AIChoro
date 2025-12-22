@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ADRListCell: View {
-    let adr: ADRModel
+    let adr: ADR
     var statusImageTitle: String {
         switch adr.status {
         case .proposal:
@@ -49,7 +49,7 @@ struct ADRListCell: View {
 }
 
 #Preview {
-    let adr = ADRModel(
+    let adr = ADR(
         status: .approved,
         decision: "今日の晩御飯はカレーにする",
         context: "Instagramで流れてきたから",

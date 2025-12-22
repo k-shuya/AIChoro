@@ -6,20 +6,43 @@
 //
 
 import SwiftUI
+import SwiftData
 
-enum ADRStatus: String{
-    case proposal = "提案"
-    case approved = "承認"
-    case rejected = "却下"
-    case withdrew = "取下"
+enum ADRStatus: Codable {
+    case proposal
+    case approved
+    case rejected
+    case withdrew
+    
+    var title: String {
+        switch self {
+        case .proposal: "提案"
+        case .approved: "承認"
+        case .rejected: "却下"
+        case .withdrew: "取下"
+        }
+    }
 }
 
-struct ADRModel: Identifiable, Hashable {
-    let id = UUID()
-    let status: ADRStatus
-    let decision: String
-    let context: String
-    let others: String
-    let createdAt = Date()
+@Model
+final class ADR: Identifiable, Hashable {
+    private(set) var id: UUID
+    private(set) var status: ADRStatus
+    private(set) var decision: String
+    private(set) var context: String
+    private(set) var others: String
+    private(set) var createdAt = Date()
+    
+    init(
+        status: ADRStatus,
+        decision: String,
+        context: String,
+        others: String
+    ) {
+        self.id = UUID()
+        self.status = status
+        self.decision = decision
+        self.context = context
+        self.others = others
+    }
 }
-

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ADRDetailScreenView: View {
-    var adr: ADRModel
+    var adr: ADR
     
     var body: some View {
         ZStack {
@@ -24,7 +24,7 @@ struct ADRDetailScreenView: View {
             Group {
                 VStack(alignment: .leading, spacing: 24) {
                     sectionView(title: "決定内容", content: adr.decision)
-                    sectionView(title: "ステータス", content: adr.status.rawValue)
+                    sectionView(title: "ステータス", content: adr.status.title)
                     sectionView(title: "背景・理由", content: adr.context)
                     sectionView(title: "その他", content: adr.others)
                 }
@@ -56,7 +56,7 @@ struct ADRDetailScreenView: View {
 }
 
 #Preview {
-    let adr = ADRModel(
+    let adr = ADR(
         status: .approved,
         decision: "今日の晩御飯はカレーにする",
         context: "Instagramで流れてきたから",
