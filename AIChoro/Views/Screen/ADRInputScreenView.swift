@@ -71,6 +71,7 @@ struct ADRInputScreenView: View {
             } label: {
                 Text("保存")
             }
+            .padding(.horizontal, 24)
             .accentColor(.white)
             .buttonStyle(ScaleButtonStyle())
             
@@ -172,14 +173,14 @@ struct ADRInputScreenView: View {
 struct ScaleButtonStyle: ButtonStyle {
   func makeBody(configuration: Self.Configuration) -> some View {
     configuration.label
-        .padding()
-        .font(.system(size: 16, weight: .semibold))
-        .foregroundStyle(.white)
-        .frame(maxWidth: .infinity, minHeight: 52)
-        .background(Color(.primary))
-        .cornerRadius(.infinity)
-        .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
-        .opacity(configuration.isPressed ? 0.4 : 1)
+          .padding()
+          .font(.system(size: 16, weight: .semibold))
+          .foregroundStyle(.white)
+          .frame(maxWidth: .infinity, minHeight: 52)
+          .background(Color(.primary))
+          .cornerRadius(.infinity)
+          .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+          .opacity(configuration.isPressed ? 0.4 : 1)
     }
 }
 

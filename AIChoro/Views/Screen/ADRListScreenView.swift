@@ -53,6 +53,26 @@ struct ADRListScreenView: View {
         }
         .listStyle(.insetGrouped)
         .listRowSpacing(16)
+        .overlay(
+            Group {
+                if adrs.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "text.page.slash")
+                            .font(.system(size: 60))
+                            .frame(width: 80, height: 80)
+                            .foregroundStyle(.primaryGray.opacity(0.5))
+                        Text("No ADR")
+                            .font(.system(size: 20, weight: .medium))
+                            .foregroundStyle(.primaryGray)
+                        Text("意思決定を記録しましょう")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(.primaryGray.opacity(0.5))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(.systemGroupedBackground))
+                }
+            }
+        )
     }
     
     var toolbar: some ToolbarContent {
@@ -60,7 +80,6 @@ struct ADRListScreenView: View {
             Spacer()
             Button {
                 adrListRouter.present(route: .adrInput)
-//                insertIntoContext()
             } label: {
                 Image(systemName: "plus")
             }
@@ -74,11 +93,6 @@ struct ADRListScreenView: View {
             modelContext.delete(adr)
             saveContext()
         }
-        
-//        if let data = adrs.first(where: { $0.id == adrs.last.id }) {
-//            context.delete(data)
-//            saveContext()
-//        }
     }
     
     private func saveContext() {
