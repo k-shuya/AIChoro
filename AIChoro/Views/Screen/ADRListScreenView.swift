@@ -14,20 +14,20 @@ struct ADRListScreenView: View {
     
     @State private var router = ADRListRouter()
     
-    let adrList: [ADRModel] = [
-        ADRModel(
+    let adrList: [ADR] = [
+        ADR(
             status: .approved,
             decision: "今日の晩御飯はカレーにする",
             context: "Instagramで流れてきたから",
             others: "食材の買い出しが必要"
         ),
-        ADRModel(
+        ADR(
             status: .withdrew,
             decision: "今日の晩御飯は寿司にする",
             context: "カレーの口になってしまったから",
             others: "来週寿司を食べる"
         ),
-        ADRModel(
+        ADR(
             status: .rejected,
             decision: "デスクトップPCを買う",
             context: "お金がなくて無理だと結論が出たため",
@@ -79,7 +79,8 @@ struct ADRListScreenView: View {
         ToolbarItemGroup(placement: .bottomBar) {
             Spacer()
             Button {
-                insertIntoContext()
+                router.present(route: .adrInput(adr: nil))
+//                insertIntoContext()
                 print("追加ボタンがタップされました")
             } label: {
                 Image(systemName: "plus")

@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum ADRStatus: Codable {
+enum ADRStatus: Codable, CaseIterable {
     case proposal
     case approved
     case rejected
