@@ -9,34 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct ADRListScreenView: View {
-    @Environment(\.modelContext) var context
+    @Environment(\.modelContext) var modelContext
     @Query private var adrs: [ADR]
     
-    @State private var router = ADRListRouter()
-    
-    let adrList: [ADR] = [
-        ADR(
-            status: .approved,
-            decision: "今日の晩御飯はカレーにする",
-            context: "Instagramで流れてきたから",
-            others: "食材の買い出しが必要"
-        ),
-        ADR(
-            status: .withdrew,
-            decision: "今日の晩御飯は寿司にする",
-            context: "カレーの口になってしまったから",
-            others: "来週寿司を食べる"
-        ),
-        ADR(
-            status: .rejected,
-            decision: "デスクトップPCを買う",
-            context: "お金がなくて無理だと結論が出たため",
-            others: "来年のボーナスが出たら再検討"
-        )
-    ]
+    @State private var adrListRouter = ADRListRouter()
     
     var body: some View {
-        NavigationStack(path: router.pathBinding()) {
+        NavigationStack(path: adrListRouter.pathBinding()) {
             ZStack {
                 contentView
                 //                error
@@ -51,6 +30,7 @@ struct ADRListScreenView: View {
                 }
             )
         }
+        .environment(\.adrListRouter, adrListRouter)
     }
     
     var contentView: some View {
@@ -64,9 +44,9 @@ struct ADRListScreenView: View {
         List {
             ForEach(adrs) { adr in
                 ADRListCell(adr: adr)
-//                    .contentShape(Rectangle())
+                    .contentShape(Rectangle())
                     .onTapGesture {
-                        router.present(route: .adrDetail(adr: adr))
+                        adrListRouter.present(route: .adrDetail(adr: adr))
                     }
             }
             .onDelete(perform: removeContext)
@@ -79,9 +59,8 @@ struct ADRListScreenView: View {
         ToolbarItemGroup(placement: .bottomBar) {
             Spacer()
             Button {
-                router.present(route: .adrInput(adr: nil))
+                adrListRouter.present(route: .adrInput)
 //                insertIntoContext()
-                print("追加ボタンがタップされました")
             } label: {
                 Image(systemName: "plus")
             }
@@ -89,21 +68,10 @@ struct ADRListScreenView: View {
         }
     }
     
-    private func insertIntoContext() {
-        let adr = ADR(
-            status: .proposal,
-            decision: "",
-            context: "",
-            others: ""
-        )
-        context.insert(adr)
-        saveContext()
-    }
-    
     private func removeContext(_ offsets: IndexSet) {
         for offset in offsets {
             let adr = adrs[offset]
-            context.delete(adr)
+            modelContext.delete(adr)
             saveContext()
         }
         
@@ -115,7 +83,7 @@ struct ADRListScreenView: View {
     
     private func saveContext() {
         do {
-            try context.save()
+            try modelContext.save()
         } catch {
             print(error.localizedDescription)
         }

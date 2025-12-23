@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ADRDetailScreenView: View {
+    @Environment(\.adrListRouter) var adrListRouter
+    
     var adr: ADR
     
     var body: some View {

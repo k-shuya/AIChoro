@@ -34,3 +34,7 @@ final class ADRListRouter {
         path.removeLast(path.count)
     }
 }
+
+extension EnvironmentValues {
+    @Entry var adrListRouter: ADRListRouter = ADRListRouter()
+}

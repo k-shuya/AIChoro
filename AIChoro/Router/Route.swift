@@ -10,14 +10,14 @@ import SwiftUI
 enum Route: Hashable {
     case adrList
     case adrDetail(adr: ADR)
-    case adrInput(adr: ADR?)
+    case adrInput
     case choroAI
     
     var title: String {
         switch self {
         case .adrList: "ADR一覧"
         case .adrDetail: "ADR詳細"
-        case .adrInput(let adr): adr == nil ? "ADR作成" : "ADR編集"
+        case .adrInput: "ADR作成"
         case .choroAI: "長老AI"
         }
     }
@@ -29,8 +29,8 @@ enum Route: Hashable {
             ADRListScreenView().navigationTitle(self.title)
         case .adrDetail(let adr):
             ADRDetailScreenView(adr: adr).navigationTitle(self.title)
-        case .adrInput(let adr):
-            ADRInputScreenView(adr: adr).navigationTitle(self.title)
+        case .adrInput:
+            ADRInputScreenView().navigationTitle(self.title)
         case .choroAI:
             ChoroAIScreenView().navigationTitle(self.title)
         }

@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ADRInputScreenView: View {
-    var adr: ADR?
-    @State private var status: String = ""
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.adrListRouter) var adrListRouter
+    
+    @Query private var adrs: [ADR]
+
+    @State private var status: ADRStatus? = nil
     @State private var decision: String = ""
     @State private var context: String = ""
     @State private var others: String = ""
@@ -28,7 +33,7 @@ struct ADRInputScreenView: View {
         VStack(spacing: 24) {
             Group {
                 VStack(alignment: .leading, spacing: 24) {
-                    pickerSectionView(
+                    statusSectionView(
                         title: "ステータス",
                         placeholder: "提案/承認/却下/取下",
                         valueState: $status
@@ -61,13 +66,13 @@ struct ADRInputScreenView: View {
             .cornerRadius(24)
             
             Button {
-                
+                insertIntoContext()
+                adrListRouter.pop()
             } label: {
                 Text("保存")
             }
             .accentColor(.white)
             .buttonStyle(ScaleButtonStyle())
-//            .frame(maxWidth: .infinity, minHeight: 52)
             
             Spacer()
         }
@@ -105,25 +110,26 @@ struct ADRInputScreenView: View {
         }
     }
     
-    private func pickerSectionView(title: String, placeholder: String, valueState: Binding<String>) -> some View {
+    private func statusSectionView(title: String, placeholder: String, valueState: Binding<ADRStatus?>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.primaryGray)
             Menu {
                 Picker(selection: $status, label: EmptyView()) {
-                    ForEach(ADRStatus.allCases, id: \.title) { status in
-                        Text(status.title)
+                    Text("未選択").tag(ADRStatus?.none)
+                    ForEach(ADRStatus.allCases, id: \.self) { status in
+                        Text(status.title).tag(ADRStatus?.some(status))
                     }
                 }
                 .labelsHidden()
                 .pickerStyle(InlinePickerStyle())
             } label: {
                 HStack {
-                    if status.isEmpty {
-                        Text("提案/承認/却下/取下")
+                    if let status {
+                        Text(status.title)
                     } else {
-                        Text(status)
+                        Text("提案/承認/却下/取下")
                     }
                     Spacer()
                     Image(systemName: "chevron.up.chevron.down")
@@ -132,17 +138,33 @@ struct ADRInputScreenView: View {
                 .padding(6)
                 .font(.system(size: 16))
                 .foregroundStyle(
-                    status.isEmpty
+                    status == nil
                     ? .gray.opacity(0.5)
                     : .ultraDarkPrimary
                 )
-                .onAppear {
-                    print(status)
-                }
             }
             .background(.ultraLightPrimary)
             .frame(width: 200, height: 34)
             .cornerRadius(8)
+        }
+    }
+    
+    private func insertIntoContext() {
+        let adr = ADR(
+            status: status ?? .proposal,
+            decision: decision,
+            context: context,
+            others: others
+        )
+        modelContext.insert(adr)
+        saveContext()
+    }
+    
+    private func saveContext() {
+        do {
+            try modelContext.save()
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }
@@ -162,11 +184,6 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 #Preview {
-    let adr = ADR(
-        status: .approved,
-        decision: "今日の晩御飯はカレーにする",
-        context: "Instagramで流れてきたから",
-        others: "食材の買い出しが必要"
-    )
-    ADRInputScreenView(adr: adr)
+    @Previewable @State var router = ADRListRouter()
+    ADRInputScreenView()
 }
