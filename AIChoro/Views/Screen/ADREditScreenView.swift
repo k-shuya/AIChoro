@@ -61,7 +61,7 @@ struct ADREditScreenView: View {
                 alignment: .leading
             )
             .background(Color(.secondarySystemGroupedBackground))
-            .cornerRadius(24)
+            .clipShape(RoundedRectangle(cornerRadius: 24))
             
             if isShowValidation {
                 Text("\(Image(systemName: "exclamationmark.triangle")) \(validationMessage)")

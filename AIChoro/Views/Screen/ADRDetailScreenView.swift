@@ -38,7 +38,7 @@ struct ADRDetailScreenView: View {
                 alignment: .leading
             )
             .background(Color(.secondarySystemGroupedBackground))
-            .cornerRadius(24)
+            .clipShape(RoundedRectangle(cornerRadius: 24))
             
             Spacer()
         }

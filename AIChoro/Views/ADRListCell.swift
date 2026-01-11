@@ -34,6 +34,7 @@ struct ADRListCell: View {
                     .frame(width: 32, height: 32)
                     .foregroundStyle(Color(.primary))
             }
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(adr.decision)
                     .font(.system(size: 16, weight: .semibold))

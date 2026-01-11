@@ -44,14 +44,18 @@ struct ADRListScreenView: View {
         List {
             ForEach(adrs) { adr in
                 ADRListCell(adr: adr)
-                    .contentShape(Rectangle())
+                    .contentShape(RoundedRectangle(cornerRadius: 24))
                     .onTapGesture {
                         adrListRouter.present(route: .adrDetail(adr: adr))
                     }
+                    .listRowBackground(
+                        // スワイプ削除で角丸が解除されるバグの対策
+                        Color(.secondarySystemGroupedBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 24))
+                    )
             }
             .onDelete(perform: removeContext)
         }
-        .listStyle(.insetGrouped)
         .listRowSpacing(16)
         .overlay(
             Group {
