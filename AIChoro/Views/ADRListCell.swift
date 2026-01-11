@@ -24,10 +24,16 @@ struct ADRListCell: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            Image(systemName: statusImageTitle)
-                .font(.title2.weight(.medium))
-                .frame(width: 32, height: 32)
-                .foregroundStyle(Color(.primary))
+            ZStack {
+                Image(systemName: "viewfinder")
+                    .font(.system(size: 32, weight: .semibold))
+                    .frame(width: 32, height: 32)
+                    .foregroundStyle(Color(.primary))
+                Image(systemName: statusImageTitle)
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 32, height: 32)
+                    .foregroundStyle(Color(.primary))
+            }
             VStack(alignment: .leading, spacing: 4) {
                 Text(adr.decision)
                     .font(.system(size: 16, weight: .semibold))
