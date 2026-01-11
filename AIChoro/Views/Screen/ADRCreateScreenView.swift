@@ -17,6 +17,9 @@ struct ADRCreateScreenView: View {
     @State private var context: String = ""
     @State private var others: String = ""
     
+    @State private var isShowValidation = false
+    @State private var validationMessage: String = ""
+    
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -63,9 +66,19 @@ struct ADRCreateScreenView: View {
             .background(Color(.secondarySystemGroupedBackground))
             .cornerRadius(24)
             
+            if isShowValidation {
+                Text("\(Image(systemName: "exclamationmark.triangle")) \(validationMessage)")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundStyle(.ultraDarkPrimary)
+            }
+            
             Button {
-                insertIntoContext()
-                adrListRouter.pop()
+                if validate() {
+                    insertIntoContext()
+                    adrListRouter.pop()
+                } else {
+                    isShowValidation = true
+                }
             } label: {
                 Text("保存")
             }
@@ -146,6 +159,28 @@ struct ADRCreateScreenView: View {
             .frame(width: 200, height: 34)
             .cornerRadius(8)
         }
+    }
+    
+    private func validate() -> Bool {
+        var result = true
+        var emptySections: [String] = []
+        
+        if status == nil {
+            emptySections.append("ステータス")
+            result = false
+        }
+        if decision.isEmpty {
+            emptySections.append("決定内容")
+            result = false
+        }
+        if context.isEmpty {
+            emptySections.append("背景・理由")
+            result = false
+        }
+        if !emptySections.isEmpty {
+            validationMessage = emptySections.joined(separator: ", ") + "を入力してください"
+        }
+        return result
     }
     
     private func insertIntoContext() {

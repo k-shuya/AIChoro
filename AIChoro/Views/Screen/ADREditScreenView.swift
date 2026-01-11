@@ -14,6 +14,9 @@ struct ADREditScreenView: View {
     
     @Bindable var adr: ADR
     
+    @State private var isShowValidation = false
+    @State private var validationMessage: String = ""
+    
     @FocusState private var isFocused: Bool
     
     var body: some View {
@@ -60,8 +63,18 @@ struct ADREditScreenView: View {
             .background(Color(.secondarySystemGroupedBackground))
             .cornerRadius(24)
             
+            if isShowValidation {
+                Text("\(Image(systemName: "exclamationmark.triangle")) \(validationMessage)")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundStyle(.ultraDarkPrimary)
+            }
+            
             Button {
-                adrListRouter.pop()
+                if validate() {
+                    adrListRouter.pop()
+                } else {
+                    isShowValidation = true
+                }
             } label: {
                 Text("保存")
             }
@@ -133,5 +146,23 @@ struct ADREditScreenView: View {
             .frame(width: 200, height: 34)
             .cornerRadius(8)
         }
+    }
+    
+    private func validate() -> Bool {
+        var result = true
+        var emptySections: [String] = []
+        
+        if adr.decision.isEmpty {
+            emptySections.append("決定内容")
+            result = false
+        }
+        if adr.context.isEmpty {
+            emptySections.append("背景・理由")
+            result = false
+        }
+        if !emptySections.isEmpty {
+            validationMessage = emptySections.joined(separator: ", ") + "を入力してください"
+        }
+        return result
     }
 }
