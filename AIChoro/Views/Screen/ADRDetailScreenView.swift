@@ -17,8 +17,7 @@ struct ADRDetailScreenView: View {
         ZStack {
             contentView
                 .background(Color(.systemGroupedBackground))
-//                error
-//                loading
+                .toolbar { toolbar }
         }
     }
     
@@ -44,6 +43,14 @@ struct ADRDetailScreenView: View {
             Spacer()
         }
         .padding(16)
+    }
+    
+    var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("編集") {
+                adrListRouter.present(route: .adrEdit(adr: adr))
+            }.foregroundStyle(.ultraDarkPrimary)
+        }
     }
     
     private func sectionView(title: String, content: String) -> some View {

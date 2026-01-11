@@ -1,5 +1,5 @@
 //
-//  ADRInputScreenView.swift
+//  ADRCreateScreenView.swift
 //  AIChoro
 //
 //  Created by 川村周也 on 2025/12/23.
@@ -8,11 +8,9 @@
 import SwiftUI
 import SwiftData
 
-struct ADRInputScreenView: View {
+struct ADRCreateScreenView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.adrListRouter) var adrListRouter
-    
-    @Query private var adrs: [ADR]
 
     @State private var status: ADRStatus? = nil
     @State private var decision: String = ""
@@ -186,5 +184,11 @@ struct ScaleButtonStyle: ButtonStyle {
 
 #Preview {
     @Previewable @State var router = ADRListRouter()
-    ADRInputScreenView()
+    let adr = ADR(
+        status: .approved,
+        decision: "今日の晩御飯はカレーにする",
+        context: "Instagramで流れてきたから",
+        others: "食材の買い出しが必要"
+    )
+    ADRCreateScreenView()
 }

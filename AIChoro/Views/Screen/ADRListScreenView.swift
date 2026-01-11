@@ -79,7 +79,7 @@ struct ADRListScreenView: View {
         ToolbarItemGroup(placement: .bottomBar) {
             Spacer()
             Button {
-                adrListRouter.present(route: .adrInput)
+                adrListRouter.present(route: .adrCreate)
             } label: {
                 Image(systemName: "plus")
             }

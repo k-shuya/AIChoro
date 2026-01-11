@@ -27,11 +27,11 @@ enum ADRStatus: Codable, CaseIterable {
 @Model
 final class ADR: Identifiable, Hashable {
     private(set) var id: UUID
-    private(set) var status: ADRStatus
-    private(set) var decision: String
-    private(set) var context: String
-    private(set) var others: String
     private(set) var createdAt = Date()
+    var status: ADRStatus
+    var decision: String
+    var context: String
+    var others: String
     
     init(
         status: ADRStatus,
