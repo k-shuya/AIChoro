@@ -37,7 +37,7 @@ struct ADRDetailScreenView: View {
                 maxWidth: .infinity,
                 alignment: .leading
             )
-            .background(Color(.white))
+            .background(Color(.secondarySystemGroupedBackground))
             .cornerRadius(24)
             
             Spacer()

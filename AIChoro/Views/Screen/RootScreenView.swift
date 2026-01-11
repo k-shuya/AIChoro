@@ -20,7 +20,7 @@ struct RootScreenView: View {
                     Label("長老AI", systemImage: "apple.intelligence")
                 }
         }
-        .tint(Color("Primary"))
+        .tint(Color(.primary))
     }
 }
 
