@@ -11,7 +11,7 @@ struct ChoroAIScreenView: View {
     @Environment(\.rootRouter) var rootRouter
     
     @State private var choroAIRouter = ChoroAIRouter()
-    @State private var searchText = ""
+    @State private var submitedText = ""
     @State private var isSearching = false
     
     @FocusState private var isFocused: Bool
@@ -41,7 +41,7 @@ struct ChoroAIScreenView: View {
                     Image(systemName: "globe")
                         .imageScale(.large)
                         .foregroundStyle(.tint)
-                    Text("Choro View")
+                    Text(submitedText)
                 }
                 .toolbar(.hidden, for: .tabBar)
             }
@@ -49,7 +49,7 @@ struct ChoroAIScreenView: View {
             .background(Color(.secondarySystemBackground))
             .scrollDismissesKeyboard(.immediately)
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                ChatInputArea()
+                ChatInputArea(submitedText: $submitedText)
             }
         }
     }

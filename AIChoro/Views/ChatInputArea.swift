@@ -10,6 +10,8 @@ import SwiftUI
 struct ChatInputArea: View {
     @Environment(\.rootRouter) var rootRouter
     
+    @Binding var submitedText: String
+    
     var body: some View {
         VStack {
             HStack(alignment: .bottom) {
@@ -25,7 +27,7 @@ struct ChatInputArea: View {
                 
                 Spacer()
                 
-                FlexibleTextView()
+                FlexibleTextView(submitedText: $submitedText)
             }
             .frame(height: 60, alignment: .bottom)
             Spacer()
