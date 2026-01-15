@@ -14,7 +14,7 @@ struct FlexibleTextView: View {
         case maxLines = 4
     }
     
-    @Binding var submitedText: String
+    @Binding var messageData: MessageData
     
     @State private var inputText = ""
     @State private var height: CGFloat = LayoutSize.baseHeight.rawValue
@@ -46,7 +46,10 @@ struct FlexibleTextView: View {
             
             Button {
                 if !inputText.isEmpty {
-                    submitedText = inputText
+                    messageData.text = inputText
+                    messageData.timeStamp = Date()
+                    inputText = ""
+                    isFocused = false
                 }
             } label: {
                 Image(systemName: "paperplane")
