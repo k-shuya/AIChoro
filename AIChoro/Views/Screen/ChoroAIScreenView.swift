@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FoundationModels
 
 enum ScrollAnchor: Hashable {
     case top
@@ -20,7 +21,7 @@ struct MessageData: Identifiable, Equatable {
 
 struct ChoroAIScreenView: View {
     enum ContentType {
-        case userQuestion
+        case userMessage
         case agentAnswer
         case recommendedADR
         case debugInfo
@@ -31,8 +32,10 @@ struct ChoroAIScreenView: View {
         var type: ContentType
         var text: String
         
-        static func == (lhs: Content, rhs: Content) -> Bool{
-            return lhs.id == rhs.id
+        static func == (lhs: Content, rhs: Content) -> Bool {
+            lhs.id == rhs.id
+            && lhs.type == rhs.type
+            && lhs.text == rhs.text
         }
     }
     
@@ -67,62 +70,113 @@ struct ChoroAIScreenView: View {
     
     var contentView: some View {
         ScrollViewReader { proxy in
-            VStack {
-                ScrollView {
-                    VStack(spacing: 24) {
-                        ForEach(contentList) { content in
-                            switch content.type {
-                            case .userQuestion:
-                                VStack(spacing: 0) {
-                                    VStack(spacing: 0) {
-                                        Text(content.text)
-                                            .font(.system(size: 16))
-                                            .foregroundStyle(Color(.ultraDarkPrimary))
-                                            .lineLimit(nil)
-                                            .frame(minHeight: 20)
-                                            .padding(.vertical, 12)
-                                            .padding(.horizontal, 16)
-                                    }
-                                    .background(Color(.secondarySystemGroupedBackground))
-                                    .clipShape(RoundedRectangle(cornerRadius: 24))
-                                }
-                                .padding(.horizontal, 24)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                            case .agentAnswer:
-                                Text(content.text)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, 24)
-                            case .recommendedADR:
-                                EmptyView()
-                            case .debugInfo:
-                                EmptyView()
-                            }
+            ScrollView {
+                VStack(spacing: 24) {
+                    ForEach(contentList) { content in
+                        switch content.type {
+                        case .userMessage:
+                            userMessageView(text: content.text)
+                        case .agentAnswer:
+                            agentAnswerView(text: content.text)
+                        case .recommendedADR:
+                            EmptyView()
+                        case .debugInfo:
+                            EmptyView()
                         }
-                        Color.clear.id(ScrollAnchor.bottom)
                     }
-                    .frame(maxWidth: .infinity)
+                    Color.clear.id(ScrollAnchor.bottom)
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color(.secondarySystemBackground))
-                .scrollDismissesKeyboard(.immediately)
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    ChatInputArea(messageData: $messageData)
-                }
-                .toolbar(.hidden, for: .tabBar)
             }
+            .frame(maxWidth: .infinity)
+            .background(Color(.secondarySystemBackground))
+            .scrollDismissesKeyboard(.immediately)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                ChatInputArea(messageData: $messageData)
+            }
+            .toolbar(.hidden, for: .tabBar)
             .onChange(of: messageData) {
                 contentList.append(
                     Content(
-                        type: .userQuestion,
+                        type: .userMessage,
                         text: messageData.text
                     )
                 )
+                Task {
+                    await sendPrompt()
+                }
             }
             .onChange(of: contentList) {
                 withAnimation {
-                    proxy.scrollTo(ScrollAnchor.bottom)
+                    if contentList.last?.type == .userMessage {
+                        proxy.scrollTo(ScrollAnchor.bottom)
+                    }
                 }
             }
+        }
+    }
+    
+    private func userMessageView(text: String) -> some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 0) {
+                Text(text)
+                    .font(.system(size: 16))
+                    .foregroundStyle(Color(.ultraDarkPrimary))
+                    .lineLimit(nil)
+                    .frame(minHeight: 20)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 16)
+            }
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+        }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+    
+    private func agentAnswerView(text: String) -> some View {
+        Text(text)
+            .font(.system(size: 16))
+            .foregroundStyle(Color(.ultraDarkPrimary))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
+    }
+    
+    private func sendPrompt() async {
+        do {
+            let session = LanguageModelSession()
+            let prompt =
+            """
+            目的：情報の検索
+            方針：まず、入力されたメッセージを元に、ユーザーがどのような情報を求めているか分析し、関連しそうなキーワードを3つ挙げます。次に、それぞれのキーワードについて情報を検索します。最後に、情報をまとめてユーザーに返答してください。
+            制約：思考の過程は回答に含めず、最後のまとめのみ回答すること。ハルシネーションしないでください。
+            プロンプト：\(messageData.text)
+            """
+            for try await chunk in session.streamResponse(to: prompt) {
+                await MainActor.run {
+                    guard let index = contentList.indices.last else { return }
+                    switch contentList[index].type {
+                    case .userMessage:
+                        contentList.append(
+                            Content(
+                                type: .agentAnswer,
+                                text: chunk.content
+                            )
+                        )
+                    case .agentAnswer:
+                        contentList[index].text = chunk.content
+                    case .debugInfo, .recommendedADR:
+                        break
+                    }
+                }
+            }
+        } catch {
+            contentList.append(
+                Content(
+                    type: .agentAnswer,
+                    text: "ローカルLLMへの接続に失敗しました: \(error.localizedDescription)"
+                )
+            )
         }
     }
 }
