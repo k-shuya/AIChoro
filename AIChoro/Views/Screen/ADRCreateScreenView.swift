@@ -25,7 +25,7 @@ struct ADRCreateScreenView: View {
     var body: some View {
         ZStack {
             contentView
-                .background(Color(.systemGroupedBackground))
+                .background(Color(.ultraLightPrimary))
                 .onTapGesture { isFocused = false }
         }
     }

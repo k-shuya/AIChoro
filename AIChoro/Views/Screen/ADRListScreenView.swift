@@ -79,6 +79,8 @@ struct ADRListScreenView: View {
             }
             .onDelete(perform: removeContext)
         }
+        .scrollContentBackground(.hidden)
+        .background(Color(.ultraLightPrimary))
         .listRowSpacing(16)
         .overlay(
             Group {

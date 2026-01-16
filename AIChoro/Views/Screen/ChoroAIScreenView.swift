@@ -95,7 +95,7 @@ struct ChoroAIScreenView: View {
                 .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
-            .background(Color(.secondarySystemBackground))
+            .background(Color(.ultraLightPrimary))
             .scrollDismissesKeyboard(.immediately)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 ChatInputArea(messageData: $messageData)

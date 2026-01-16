@@ -23,7 +23,7 @@ struct ChatInputArea: View {
                 }
                 .frame(width: 60, height: 60)
                 .clipShape(Circle())
-                .glassEffect(.clear.interactive())
+                .glassEffect(.regular.interactive())
                 
                 Spacer()
                 
