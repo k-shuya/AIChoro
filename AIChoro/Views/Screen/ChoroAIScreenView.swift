@@ -42,6 +42,7 @@ struct ChoroAIScreenView: View {
     @Environment(\.rootRouter) var rootRouter
     
     @State private var choroAIRouter = ChoroAIRouter()
+    @State var isLoading : Bool = false
     @State private var messageData: MessageData = MessageData(
         text: "", timeStamp: Date()
     )
@@ -84,6 +85,11 @@ struct ChoroAIScreenView: View {
                             EmptyView()
                         }
                     }
+                    
+                    if isLoading {
+                        agentLoadingView()
+                    }
+                    
                     Color.clear.id(ScrollAnchor.bottom)
                 }
                 .frame(maxWidth: .infinity)
@@ -142,7 +148,17 @@ struct ChoroAIScreenView: View {
             .padding(.horizontal, 24)
     }
     
+    private func agentLoadingView() -> some View {
+        VStack(spacing: 0) {
+            BouncingDotsLoader()
+        }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
     private func sendPrompt() async {
+        isLoading = true
+        
         do {
             let session = LanguageModelSession()
             let prompt =
@@ -154,6 +170,7 @@ struct ChoroAIScreenView: View {
             """
             for try await chunk in session.streamResponse(to: prompt) {
                 await MainActor.run {
+                    isLoading = false
                     guard let index = contentList.indices.last else { return }
                     switch contentList[index].type {
                     case .userMessage:
