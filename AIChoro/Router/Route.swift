@@ -20,7 +20,7 @@ enum Route: Hashable {
         case .adrDetail: "ADR詳細"
         case .adrCreate: "ADR作成"
         case .adrEdit: "ADR編集"
-        case .choroAI: "長老AI"
+        case .choroAI: "AIちょーろー"
         }
     }
     
