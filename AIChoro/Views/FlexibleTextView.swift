@@ -50,6 +50,6 @@ struct FlexibleTextView: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
         .frame(minHeight: 60)
-        .glassEffect()
+        .glassEffect(in: RoundedRectangle(cornerRadius: 30))
     }
 }

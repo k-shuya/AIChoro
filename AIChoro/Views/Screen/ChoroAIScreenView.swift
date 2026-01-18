@@ -58,7 +58,7 @@ struct ChoroAIScreenView: View {
         NavigationStack(path: choroAIRouter.pathBinding()) {
             ZStack {
                 contentView
-                    .onTapGesture { isFocused = false }
+                    .background(Color(.ultraLightPrimary).ignoresSafeArea())
                     .toolbar(.hidden, for: .tabBar)
             }
             .navigationTitle(Route.choroAI.title)
@@ -102,7 +102,6 @@ struct ChoroAIScreenView: View {
                 .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
-            .background(Color(.ultraLightPrimary))
             .scrollDismissesKeyboard(.immediately)
             .onChange(of: messageData) {
                 contentList.append(

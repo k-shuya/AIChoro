@@ -20,8 +20,7 @@ struct ADRListScreenView: View {
         NavigationStack(path: adrListRouter.pathBinding()) {
             ZStack {
                 contentView
-                //                error
-                //                loading
+                    .toolbar { toolbar }
             }
             .navigationTitle(Route.adrList.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -38,7 +37,6 @@ struct ADRListScreenView: View {
     var contentView: some View {
         VStack {
             adrListView
-                .toolbar { toolbar }
         }
     }
     
@@ -84,17 +82,10 @@ struct ADRListScreenView: View {
     }
     
     var toolbar: some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarTrailing) {
-//            Button("編集") {
-//                adrListRouter.present(route: .adrEdit(adr: adr))
-//            }.foregroundStyle(.ultraDarkPrimary)
-            Button {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("追加") {
                 adrListRouter.present(route: .adrCreate)
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 20, weight: .semibold))
-            }
-            .frame(width: 52, height: 52)
+            }.foregroundStyle(Color(.ultraDarkPrimary))
         }
     }
     
