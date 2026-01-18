@@ -13,26 +13,20 @@ struct ChatInputArea: View {
     @Binding var messageData: MessageData
     
     var body: some View {
-        VStack {
-            HStack(alignment: .bottom) {
-                Button {
-                    rootRouter.changeTab(tab: .adrList)
-                } label: {
-                    Image(systemName: "folder")
-                        .font(.system(size: 24, weight: .semibold))
-                }
-                .frame(width: 60, height: 60)
-                .clipShape(Circle())
-                .glassEffect(.regular.interactive())
-                
-                Spacer()
-                
-                FlexibleTextView(messageData: $messageData)
+        HStack(alignment: .bottom) {
+            Button {
+                rootRouter.changeTab(tab: .adrList)
+            } label: {
+                Image(systemName: "folder")
+                    .font(.system(size: 24, weight: .semibold))
             }
-            .frame(height: 60, alignment: .bottom)
+            .frame(width: 60, height: 60)
+            .glassEffect(.regular.interactive())
+            
             Spacer()
+            
+            FlexibleTextView(messageData: $messageData)
         }
         .padding(.horizontal, 16)
-        .frame(height: 60)
     }
 }

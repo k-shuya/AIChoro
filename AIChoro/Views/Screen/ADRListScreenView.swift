@@ -84,8 +84,10 @@ struct ADRListScreenView: View {
     }
     
     var toolbar: some ToolbarContent {
-        ToolbarItemGroup(placement: .bottomBar) {
-            Spacer()
+        ToolbarItemGroup(placement: .topBarTrailing) {
+//            Button("編集") {
+//                adrListRouter.present(route: .adrEdit(adr: adr))
+//            }.foregroundStyle(.ultraDarkPrimary)
             Button {
                 adrListRouter.present(route: .adrCreate)
             } label: {

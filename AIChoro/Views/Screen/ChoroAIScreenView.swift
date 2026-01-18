@@ -43,7 +43,6 @@ struct ChoroAIScreenView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.rootRouter) var rootRouter
     
-    @State private var vectorSearchService: VectorSearchServiceProtocol? = nil
     @State private var choroAIRouter = ChoroAIRouter()
     @State var isLoading : Bool = false
     @State private var messageData: MessageData = MessageData(
@@ -60,11 +59,7 @@ struct ChoroAIScreenView: View {
             ZStack {
                 contentView
                     .onTapGesture { isFocused = false }
-                    .onAppear {
-                        if vectorSearchService == nil {
-                            vectorSearchService = VectorSearchService(modelContext: modelContext)
-                        }
-                    }
+                    .toolbar(.hidden, for: .tabBar)
             }
             .navigationTitle(Route.choroAI.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -74,6 +69,9 @@ struct ChoroAIScreenView: View {
                     route.makeDestinationView()
                 }
             )
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                ChatInputArea(messageData: $messageData)
+            }
         }
         .environment(\.choroAIRouter, choroAIRouter)
     }
@@ -106,10 +104,6 @@ struct ChoroAIScreenView: View {
             .frame(maxWidth: .infinity)
             .background(Color(.ultraLightPrimary))
             .scrollDismissesKeyboard(.immediately)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                ChatInputArea(messageData: $messageData)
-            }
-            .toolbar(.hidden, for: .tabBar)
             .onChange(of: messageData) {
                 contentList.append(
                     Content(
@@ -119,9 +113,8 @@ struct ChoroAIScreenView: View {
                 )
                 Task {
                     guard let text = contentList.last?.text else { return }
-//                    let result = await vectorSearchService.searchWithHNSW(text: text)
-                    let result = await vectorSearchService?.searchFull(queryText: text, topK: 3)
-                    await sendPrompt(searchResults: result ?? [])
+                    let result = await VectorSearchService(modelContext: modelContext).searchFull(queryText: text, topK: 3)
+                    await sendPrompt(searchResults: result)
                 }
             }
             .onChange(of: contentList) {

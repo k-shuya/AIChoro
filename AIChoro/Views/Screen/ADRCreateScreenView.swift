@@ -27,6 +27,7 @@ struct ADRCreateScreenView: View {
             contentView
                 .background(Color(.ultraLightPrimary))
                 .onTapGesture { isFocused = false }
+                .toolbar(.hidden, for: .tabBar)
         }
     }
     

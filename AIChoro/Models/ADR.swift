@@ -77,15 +77,14 @@ final class ADR: Sendable, Identifiable, Hashable {
         others: String
     ) async -> [Float] {
         let adrText =
-            """
-            {
-                決定内容: "\(decision)",
-                ステータス: "\(status.title)",
-                背景・理由: "\(context)",
-                その他: "\(others)",
-            }
-            """
-        
+                """
+                {
+                    決定内容: "\(decision)",
+                    ステータス: "\(await status.title)",
+                    背景・理由: "\(context)",
+                    その他: "\(others)",
+                }
+                """
         guard let encodedVector = await ContextualEmbeddingService().encode(text: adrText)
         else {
             fatalError("vectorizeADR(): 埋め込みに失敗しました")

@@ -18,6 +18,7 @@ struct ADRDetailScreenView: View {
             contentView
                 .background(Color(.ultraLightPrimary))
                 .toolbar { toolbar }
+                .toolbar(.hidden, for: .tabBar)
         }
     }
     
