@@ -57,7 +57,7 @@ struct FlexibleTextView: View {
                     .foregroundStyle(.white)
             }
             .frame(width: 32, height: 32)
-            .background(Color(.primary))
+            .background(Color(.appPrimary))
             .clipShape(Circle())
             .padding(.bottom, 14)
             .padding(.trailing, 8)

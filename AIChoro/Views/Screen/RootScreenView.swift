@@ -24,11 +24,10 @@ struct RootScreenView: View {
                 .tabItem {
                     Image(systemName: "apple.intelligence")
                         .font(.system(size: 24, weight: .semibold))
-                        .symbolRenderingMode(.palette)
                 }
                 .tag(RootRouter.Tab.choroAI)
         }
-        .tint(Color(.primary))
+        .tint(Color(.appPrimary))
         .environment(\.rootRouter, rootRouter)
     }
 }

@@ -13,7 +13,7 @@ struct ADRListScreenView: View {
     @Environment(\.modelContext) var modelContext
     
     @Query private var adrs: [ADR]
-    
+
     @State private var adrListRouter = ADRListRouter()
     
     var body: some View {
@@ -38,28 +38,7 @@ struct ADRListScreenView: View {
     var contentView: some View {
         VStack {
             adrListView
-                .toolbar {
-                    toolbar
-//                    ToolbarItem(placement: .bottomBar) {
-//                        Button {
-//                            rootRouter.changeTab(tab: .choroAI)
-//                        } label: {
-//                            Image(systemName: "apple.intelligence")
-//                        }
-//                        .frame(width: 52, height: 52)
-//                    }
-//                    ToolbarItem(placement: .bottomBar) {
-//                        Spacer()
-//                    }
-//                    ToolbarItem(placement: .bottomBar) {
-//                        Button {
-//                            adrListRouter.present(route: .adrCreate)
-//                        } label: {
-//                            Image(systemName: "plus")
-//                        }
-//                        .frame(width: 52, height: 52)
-//                    }
-                }
+                .toolbar { toolbar }
         }
     }
     

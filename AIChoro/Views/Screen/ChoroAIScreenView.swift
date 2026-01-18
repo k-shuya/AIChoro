@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import FoundationModels
 
 enum ScrollAnchor: Hashable {
@@ -39,12 +40,15 @@ struct ChoroAIScreenView: View {
         }
     }
     
+    @Environment(\.modelContext) var modelContext
     @Environment(\.rootRouter) var rootRouter
     
+    @State private var vectorSearchService: VectorSearchServiceProtocol? = nil
     @State private var choroAIRouter = ChoroAIRouter()
     @State var isLoading : Bool = false
     @State private var messageData: MessageData = MessageData(
-        text: "", timeStamp: Date()
+        text: "",
+        timeStamp: Date()
     )
     
     @State private var contentList: [Content] = []
@@ -56,6 +60,11 @@ struct ChoroAIScreenView: View {
             ZStack {
                 contentView
                     .onTapGesture { isFocused = false }
+                    .onAppear {
+                        if vectorSearchService == nil {
+                            vectorSearchService = VectorSearchService(modelContext: modelContext)
+                        }
+                    }
             }
             .navigationTitle(Route.choroAI.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -109,7 +118,10 @@ struct ChoroAIScreenView: View {
                     )
                 )
                 Task {
-                    await sendPrompt()
+                    guard let text = contentList.last?.text else { return }
+//                    let result = await vectorSearchService.searchWithHNSW(text: text)
+                    let result = await vectorSearchService?.searchFull(queryText: text, topK: 3)
+                    await sendPrompt(searchResults: result ?? [])
                 }
             }
             .onChange(of: contentList) {
@@ -156,17 +168,36 @@ struct ChoroAIScreenView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func sendPrompt() async {
+    private func sendPrompt(searchResults: [(score: Float, adr: ADR)]) async {
         isLoading = true
+        var adrTexts: [String] = []
+        
+        for result in searchResults {
+            let adr = result.adr
+            let adrText =
+            """
+            "決定内容": "\(adr.decision)",
+            "ステータス": \(adr.status.title),
+            "背景・理由": "\(adr.context)",
+            "その他": "\(adr.others)"
+            """
+            adrTexts.append(adrText)
+        }
+        
+        let adrPrompt = """
+        "検索結果": [
+        \(adrTexts.map { "    {\n        \($0)\n    }" }.joined(separator: ",\n"))
+        ]
+        """
         
         do {
             let session = LanguageModelSession()
             let prompt =
             """
-            目的：情報の検索
-            方針：まず、入力されたメッセージを元に、ユーザーがどのような情報を求めているか分析し、関連しそうなキーワードを3つ挙げます。次に、それぞれのキーワードについて情報を検索します。最後に、情報をまとめてユーザーに返答してください。
-            制約：思考の過程は回答に含めず、最後のまとめのみ回答すること。ハルシネーションしないでください。
-            プロンプト：\(messageData.text)
+            目的: 「ADR検索結果」を参照し、「ユーザーの入力」に対する回答を生成する
+            制約: ハルシネーションしないでください。
+            ユーザーの入力: \(messageData.text)
+            ADR検索結果: \(adrPrompt)
             """
             for try await chunk in session.streamResponse(to: prompt) {
                 await MainActor.run {

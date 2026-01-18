@@ -7,17 +7,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "49EB0180-8A14-46C0-BA37-DBF689C847E8"
+            uuid = "364518BC-8F59-443F-A029-034027B87AD8"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../../var/folders/_2/rllx0lyj1317wh7hdppx34w00000gn/T/swift-generated-sources/@__swiftmacro_7AIChoro3ADRC6status18_PersistedPropertyfMa_.swift"
+            filePath = "AIChoro/Searvices/VectorSearchService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1"
-            endingLineNumber = "1"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "searchFull(queryText:topK:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

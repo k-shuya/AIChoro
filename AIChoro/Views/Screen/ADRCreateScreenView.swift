@@ -210,7 +210,7 @@ struct ScaleButtonStyle: ButtonStyle {
           .font(.system(size: 16, weight: .semibold))
           .foregroundStyle(.white)
           .frame(maxWidth: .infinity, minHeight: 52)
-          .background(Color(.primary))
+          .background(Color(.appPrimary))
           .cornerRadius(.infinity)
           .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
           .opacity(configuration.isPressed ? 0.4 : 1)
@@ -227,3 +227,4 @@ struct ScaleButtonStyle: ButtonStyle {
     )
     ADRCreateScreenView()
 }
+

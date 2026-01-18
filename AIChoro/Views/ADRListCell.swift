@@ -28,11 +28,11 @@ struct ADRListCell: View {
                 Image(systemName: "viewfinder")
                     .font(.system(size: 32, weight: .semibold))
                     .frame(width: 32, height: 32)
-                    .foregroundStyle(Color(.primary))
+                    .foregroundStyle(Color(.appPrimary))
                 Image(systemName: statusImageTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .frame(width: 32, height: 32)
-                    .foregroundStyle(Color(.primary))
+                    .foregroundStyle(Color(.appPrimary))
             }
 
             VStack(alignment: .leading, spacing: 4) {
