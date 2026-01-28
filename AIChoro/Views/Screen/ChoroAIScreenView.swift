@@ -169,21 +169,24 @@ struct ChoroAIScreenView: View {
                 .font(.system(size: 16))
                 .foregroundStyle(Color(.ultraDarkPrimary))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             VStack(spacing: 16) {
                 ForEach(results) { result in
-                    ADRListCell(adr: result.adr)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .frame(minHeight: 72)
-                        .contentShape(RoundedRectangle(cornerRadius: 24))
-                        .background(
-                            Color(.secondarySystemGroupedBackground)
-                                .clipShape(RoundedRectangle(cornerRadius: 24))
-                        )
-                        .onTapGesture {
-                            // TODO: 遷移処理
-                        }
+                    Button {
+                        choroAIRouter.present(route: .adrDetail(adr: result.adr))
+                    } label: {
+                        ADRListCell(adr: result.adr)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .frame(minHeight: 72)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.plain)
+                    .contentShape(RoundedRectangle(cornerRadius: 24))
+                    .background(
+                        Color(.secondarySystemGroupedBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 24))
+                    )
                 }
             }
         }
