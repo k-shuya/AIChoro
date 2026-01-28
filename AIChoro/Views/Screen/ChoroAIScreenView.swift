@@ -32,11 +32,13 @@ struct ChoroAIScreenView: View {
         var id: UUID = UUID()
         var type: ContentType
         var text: String
+        var searchResults: [SearchResult]?
         
         static func == (lhs: Content, rhs: Content) -> Bool {
             lhs.id == rhs.id
             && lhs.type == rhs.type
             && lhs.text == rhs.text
+            && lhs.searchResults == rhs.searchResults
         }
     }
     
@@ -87,7 +89,8 @@ struct ChoroAIScreenView: View {
                         case .agentAnswer:
                             agentAnswerView(text: content.text)
                         case .recommendedADR:
-                            EmptyView()
+                            Divider()
+                            recommendedADRView(results: content.searchResults ?? [])
                         case .debugInfo:
                             EmptyView()
                         }
@@ -160,7 +163,35 @@ struct ChoroAIScreenView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    private func sendPrompt(searchResults: [(score: Float, adr: ADR)]) async {
+    private func recommendedADRView(results: [SearchResult]) -> some View {
+        VStack(spacing: 24) {
+            Text("以下のADRがヒットしました。必要に応じてご参照ください。")
+                .font(.system(size: 16))
+                .foregroundStyle(Color(.ultraDarkPrimary))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            VStack(spacing: 16) {
+                ForEach(results) { result in
+                    ADRListCell(adr: result.adr)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 72)
+                        .contentShape(RoundedRectangle(cornerRadius: 24))
+                        .background(
+                            Color(.secondarySystemGroupedBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: 24))
+                        )
+                        .onTapGesture {
+                            // TODO: 遷移処理
+                        }
+                }
+            }
+        }
+        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    private func sendPrompt(searchResults: [SearchResult]) async {
         isLoading = true
         var adrTexts: [String] = []
         
@@ -187,7 +218,16 @@ struct ChoroAIScreenView: View {
             let prompt =
             """
             目的: 「ADR検索結果」を参照し、「ユーザーの入力」に対する回答を生成する
-            制約: ハルシネーションしないでください。
+            制約: ハルシネーションしないでください。聞かれたことに簡潔に答えてください。回答例を参考にしてください。ただし形式は参考にせず、回答する際は、いきなり回答から始めるように。
+            回答例:
+            {
+                input: 晩御飯について
+                output: 晩御飯についてのADRは3件あります。
+            },
+            {
+                input: なぜ晩御飯をカレーにしたのか？
+                output: 晩御飯をカレーにした理由については、検索したADRの情報によると、「SNSを見て美味しそうだったから」です。詳しくは該当のADRを参照ください
+            }
             ユーザーの入力: \(messageData.text)
             ADR検索結果: \(adrPrompt)
             """
@@ -218,6 +258,15 @@ struct ChoroAIScreenView: View {
                 )
             )
         }
+        
+        // ADR提案ブロックの追加
+        contentList.append(
+            Content(
+                type: .recommendedADR,
+                text: "下記のADRが見つかりました: ",
+                searchResults: searchResults
+            )
+        )
     }
 }
 

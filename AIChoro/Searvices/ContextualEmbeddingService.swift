@@ -21,10 +21,10 @@ final class ContextualEmbeddingService: ContextualEmbeddingServiceProtocol {
             fatalError("Failed to load model")
         }
         
-        if model.hasAvailableAssets {
-            try? model.load()
-        } else {
-            Task {
+        Task {
+            if model.hasAvailableAssets {
+                try model.load()
+            } else {
                 try await model.requestAssets()
                 try model.load()
             }

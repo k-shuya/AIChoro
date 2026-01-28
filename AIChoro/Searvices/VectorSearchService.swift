@@ -10,7 +10,13 @@ import Foundation
 import Accelerate
 
 protocol VectorSearchServiceProtocol {
-    func searchFull(queryText: String, topK: Int) async -> [(Float, ADR)]
+    func searchFull(queryText: String, topK: Int) async -> [SearchResult]
+}
+
+struct SearchResult: Identifiable, Equatable {
+    let id = UUID()
+    var score: Float
+    var adr: ADR
 }
 
 struct TopKHeap<T> {
@@ -27,7 +33,7 @@ struct TopKHeap<T> {
             siftUp(from: items.count - 1)
         } else if let minScore = items.first?.score, score > minScore {
             items[0] = (score, value)
-            siftUp(from: 0)
+            siftDown(from: 0)
         }
     }
     
@@ -39,7 +45,7 @@ struct TopKHeap<T> {
         var child = index
         while child > 0 {
             let parent = (child - 1) / 2
-            if items[child].score > items[parent].score {
+            if items[child].score < items[parent].score {
                 items.swapAt(child, parent)
                 child = parent
             } else {
@@ -81,11 +87,13 @@ final class VectorSearchService: VectorSearchServiceProtocol {
         self.modelContext = modelContext
     }
     
-    func searchFull(queryText: String, topK: Int = 5) async -> [(Float, ADR)] {
+    func searchFull(queryText: String, topK: Int = 5) async -> [SearchResult] {
         guard let queryEmbedding = await contextualEmbeddingSearvice.encode(text: queryText)
         else {
             fatalError("searchFull() vectorize failed: 埋め込みに失敗しました")
         }
+        
+        print("クエリ埋め込みベクトル: \(queryEmbedding)")
         
         do {
             // 全件取得
@@ -97,13 +105,15 @@ final class VectorSearchService: VectorSearchServiceProtocol {
             for chunk in chunks {
                 // embeddingData -> [Float]
                 guard let vector = chunk.embedding?.toFloatArray() else {
-                    fatalError("searchFull() chunk embedding nil: \(chunk.embedding)")
-                    return []
+                    fatalError("searchFull() chunk embedding nil: \(String(describing: chunk.embedding))")
                 }
                 let score = vDSP.dot(queryEmbedding, vector)
+                print("score: \(score), chunk: \(chunk.decision)")
                 heap.push(score: score, value: chunk)
             }
-            return heap.sortedDescending()
+            return heap.sortedDescending().map { (score, chunk) in
+                return SearchResult(score: score, adr: chunk)
+            }
         } catch {
             fatalError("searchFull() error: \(error)")
         }
