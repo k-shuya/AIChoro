@@ -93,7 +93,7 @@ final class VectorSearchService: VectorSearchServiceProtocol {
             fatalError("searchFull() vectorize failed: 埋め込みに失敗しました")
         }
         
-        print("クエリ埋め込みベクトル: \(queryEmbedding)")
+        print("クエリテキスト: \(queryText)")
         
         do {
             // 全件取得

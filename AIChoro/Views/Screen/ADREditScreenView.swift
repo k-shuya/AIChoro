@@ -45,7 +45,8 @@ struct ADREditScreenView: View {
                     sectionView(
                         title: "背景・理由",
                         placeholder: "インスタを見て食べたくなったから",
-                        valueState: $adr.context
+                        valueState: $adr.context,
+                        shouldMultiLine: true
                     )
                     sectionView(
                         title: "その他",
@@ -72,6 +73,9 @@ struct ADREditScreenView: View {
             
             Button {
                 if validate() {
+                    Task {
+                        await adr.reVectrize()
+                    }
                     adrListRouter.pop()
                 } else {
                     isShowValidation = true

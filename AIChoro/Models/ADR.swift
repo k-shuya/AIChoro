@@ -70,6 +70,15 @@ final class ADR: Sendable, Identifiable, Hashable {
         }
     }
     
+    func reVectrize() async {
+        embedding = await vectorizeADR(
+            decision: decision,
+            status: status,
+            context: context,
+            others: others
+        ).toData()
+    }
+    
     private func vectorizeADR(
         decision: String,
         status: ADRStatus,

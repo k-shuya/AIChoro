@@ -48,7 +48,8 @@ struct ADRCreateScreenView: View {
                     sectionView(
                         title: "背景・理由",
                         placeholder: "インスタを見て食べたくなったから",
-                        valueState: $context
+                        valueState: $context,
+                        shouldMultiLine: true
                     )
                     sectionView(
                         title: "その他",

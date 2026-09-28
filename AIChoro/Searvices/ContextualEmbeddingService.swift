@@ -55,7 +55,8 @@ final class ContextualEmbeddingService: ContextualEmbeddingServiceProtocol {
                 let sequenceLength = embeddingResult.sequenceLength
                 if sequenceLength > 0 {
                     // 平均プーリング（トークンベクトルの総和をトークン数で平均して畳み込み）
-                    return vDSP.divide(meanPooledEmbeddings, Float(sequenceLength))
+                    let averaged = vDSP.divide(meanPooledEmbeddings, Float(sequenceLength))
+                    return l2Normalize(averaged)
                 }
                 // L2 normalization
                 return l2Normalize(meanPooledEmbeddings)
